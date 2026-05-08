@@ -1,4 +1,4 @@
-# Proposed Improvements for Integrated Cursor AI Agent Rules System (2026 Update)
+﻿# Proposed Improvements for Integrated Cursor AI Agent Rules System (2026 Update)
 
 **Repository:** https://github.com/Tholem-AI/Tholem-Cursor-Kit  
 **Current Status:** Legacy and 2026 patterns are mixed  
@@ -13,8 +13,17 @@ This update keeps the kit low friction while removing cleanup-heavy artifacts fr
 Key outcomes:
 - Runtime `.cursor/` contains operational content only.
 - Technology stack constraints are inferred from project inputs, then review-gated.
-- Documentation continuity is always-on baseline behavior, with Generate Memories additive.
+- Documentation continuity is always-on baseline behavior; optional memory automations are additive where documented and enabled.
 - Legacy files are migrated with a deterministic matrix and full manifest.
+
+---
+
+## Execution Authority (Canonical Pointer)
+
+For migration implementation decisions, use:
+- `docs/migration/Migration-Execution-Runbook.md` as canonical execution policy.
+
+This overview remains a strategy and historical reference document.
 
 ---
 
@@ -27,11 +36,11 @@ Key outcomes:
 **Bootstrap path (Tier B):**
 1. Add design/requirements artifacts if available.
 2. Run a single bootstrap prompt.
-3. Review proposed changes before apply.
+3. Review the plan/diff before final acceptance.
 
 Canonical prompt:
 
-> Bootstrap this project using the included bootstrap-project skill. Analyze design and requirements docs if present, initialize ROADMAP.md, populate required placeholders, and propose all changes for review before applying.
+> Bootstrap this project using the included bootstrap-project skill. Analyze design and requirements docs if present, initialize ROADMAP.md, populate required placeholders, and present a reviewable plan/diff before final acceptance.
 
 ---
 
@@ -41,7 +50,7 @@ Canonical prompt:
 Must include only:
 - Required runtime rules
 - Required runtime agents/subagents
-- Required runtime skills
+- Required runtime skills (`.cursor/skills` and/or `.agents/skills`, depending on installation surface)
 - Required placeholders and enforceable policy
 
 Must exclude:
@@ -78,7 +87,7 @@ Release rules:
 
 ### 4.1 2026 Surface Alignment (High Priority)
 - Keep runtime-compatible support for rules, skills, subagents, and optional hooks.
-- Keep guidance for AGENTS.md and memory behavior in reference docs.
+- Keep guidance for AGENTS.md and documented persistence behavior in reference docs.
 - Avoid bundling optional enterprise automation into default install.
 
 ### 4.2 RIPER Evolution (High Priority)
@@ -91,12 +100,12 @@ Release rules:
 
 ### 4.4 Memory System (Medium Priority, Default-On Documentation Baseline)
 - Documentation continuity is the default baseline, always enabled.
-- For users not using Generate Memories, rules/agents/skills must still persist state through docs and roadmap updates.
+- Rules/agents/skills must persist operational state through docs and roadmap updates, independent of optional memory features.
 - Integration requirements:
   - **Rules:** enforce update checkpoints for `ROADMAP.md` and required docs after major changes.
   - **Agents/Subagents:** emit concise handoff summaries for completed phases.
   - **Skills:** bootstrap/updater workflows write deterministic context summaries.
-- Generate Memories is additive and should be enabled by default where available and privacy policy permits; it does not replace documentation hygiene.
+- Optional memory automation is additive where available and policy-permitted; it does not replace documentation hygiene.
 
 ### 4.5 Documentation Maintenance (Medium Priority)
 - Keep documentation ownership explicit (single primary owner).
@@ -108,7 +117,7 @@ Release rules:
   1. Project requirements/design docs
   2. Detected project config files
   3. Conservative fallback defaults
-- Bootstrap writes inferred stack constraints to runtime placeholders and presents a review diff before apply.
+- Bootstrap writes inferred stack constraints to runtime placeholders and presents a reviewable plan/diff before final acceptance.
 - Fallback defaults are assumptions for missing metadata, not mandatory target versions.
 
 ---
@@ -133,11 +142,11 @@ All current project-root files are listed with explicit disposition.
 | `013-cursor_riper_rules.mdc` | runtime | Keep minimal RIPER operational rules; avoid broad orchestration text | Runtime should stay concise | RIPER and Subagents | Works with v1 limited topology |
 | `010-cursor_general_rules.mdc` | runtime | Keep foundational runtime constraints; move explanatory rationale to docs | Runtime baseline | Runtime Core | No cleanup-prone sample blocks remain |
 | `LICENSE` | static | Keep as-is | Legal artifact | Migration Governance | File unchanged in release comparison |
-| `031-cursor_memory_rules.mdc` | runtime | Update to enforce documentation-first continuity checkpoints; Generate Memories additive | Implements section 4.4 baseline | Runtime Core | Checkpoints trigger documented update behavior |
+| `031-cursor_memory_rules.mdc` | runtime | Update to enforce documentation-first continuity checkpoints; optional memory features additive | Implements section 4.4 baseline | Runtime Core | Checkpoints trigger documented update behavior |
 | `040-cursor_organization_rules.mdc` | runtime | Keep organizational constraints that affect runtime behavior; move narrative process notes out | Maintain runtime clarity | Runtime Core | Runtime-only content confirmed |
 | `020-task_list.mdc` | deprecated | Deprecate/remove in favor of `ROADMAP.md` model and updater workflows | Superseded by deterministic roadmap lifecycle | Migration Governance | Deprecation note and successor path documented |
 | `091-learned_memories_archive.mdc` | docs | Archive as reference-only historical material outside runtime payload | Historical context, not runtime | Documentation and Examples | Linked from migration docs as archive |
-| `docs/migration/Cursor-Rules-System-2026-Improvements-Overview.md` | docs | Keep as canonical strategy document; maintain consistency with migration matrix and section 5 | Governance source | Migration Governance | Cross-check passes with runtime policy and manifest schema |
+| `docs/migration/Cursor-Rules-System-2026-Improvements-Overview.md` | docs | Keep as strategy/history reference; defer execution policy to `docs/migration/Migration-Execution-Runbook.md` | Governance context source | Migration Governance | Overview and runbook remain consistent on gates and status |
 | `docs/migration/Phase-1-Minimal-Runtime-Foundation-Plan.md` | docs | Planning-only Phase 1 blueprint; source sections reference the overview | Phase 1 governance | Migration Governance | Linked from README and overview |
 | `docs/migration/phase-1/*` | docs | Maintain explicit Phase 1 deliverables and sign-off evidence | Approval artifacts for Phase 1 exit criteria | Migration Governance | `python scripts/validate_setup.py --mode kit` requires all artifacts |
 | `migration-manifest.yaml` | static | Track legacy-system inventory and classification through migration | Traceability for parity gates | Migration Governance | Validates with `python scripts/validate_setup.py` (kit repo) |
@@ -177,6 +186,10 @@ Manifest fields per file:
 - `owner`
 - `replacement`
 - `validation`
+- `status`
+- `statusHistory`
+- `statusNotes`
+- `evidenceRef`
 
 ---
 
@@ -249,7 +262,7 @@ The update is considered successful only when all criteria are true:
 
 - Install path requires at most 3 manual steps.
 - Default install remains: copy `.cursor/` into project root.
-- Optional bootstrap path uses one canonical prompt with user review before applying changes.
+- Optional bootstrap path uses one canonical prompt with a reviewable plan/diff before final acceptance.
 - Runtime `.cursor/` files contain operational logic and placeholders only (no tutorial prose or long examples).
 - Bootstrap customization requires zero manual artifact cleanup in runtime files.
 - Every migrated legacy file is classified in a migration manifest as `runtime`, `docs`, or `deprecated`.
@@ -306,7 +319,7 @@ Operational rule/agent/skill files should reference docs briefly rather than emb
 
 Canonical prompt:
 
-> Bootstrap this project using the included bootstrap-project skill. Analyze design and requirements docs if present, initialize ROADMAP.md, populate required placeholders, and propose all changes for review before applying.
+> Bootstrap this project using the included bootstrap-project skill. Analyze design and requirements docs if present, initialize ROADMAP.md, populate required placeholders, and present a reviewable plan/diff before final acceptance.
 
 Required bootstrap outputs:
 - `ROADMAP.md` initialized
@@ -528,7 +541,7 @@ Users can also manually copy the `.cursor/` folder and customize files themselve
 
 ## 2. Staging Directory (Development Workflow)
 
-**Purpose:** Allow safe editing of the rules without them loading in your main project.
+**Purpose:** Allow safe editing of runtime artifacts before copying to active Cursor discovery paths.
 
 **Recommended simple structure:**
 
@@ -542,8 +555,8 @@ staging/
 ```
 
 **Why this works:**
-- Cursor only loads rules from the **project root** (`.cursor/rules/`)
-- Rules inside `staging/.cursor/` are ignored during development
+- Active project surfaces are discovered from configured Cursor paths (for example `.cursor/rules`, `.cursor/agents`, `.cursor/skills`, and `.agents/skills` where applicable).
+- `staging/.cursor/` is a repository workflow convention and is not treated as an active runtime surface until copied into active paths.
 - When ready to test, copy the folder:
   ```bash
   cp -r staging/.cursor/ /path/to/your-project/
@@ -581,7 +594,7 @@ Integrated-Cursor-AI-Agent-Rules-System/
 **Key Design Decisions:**
 - No pre-created `ROADMAP.md` or `docs/` templates in the repo (keeps it lean)
 - The `bootstrap-project` skill creates all necessary files intelligently on first use
-- `staging/.cursor/` is used exclusively for development
+- `staging/.cursor/` is used as a development convention before activation in runtime paths
 
 ---
 
@@ -590,10 +603,10 @@ Integrated-Cursor-AI-Agent-Rules-System/
 ### 4.1 2026 Feature Support (High Priority)
 - Full documentation and examples for:
   - Subagents (`.cursor/agents/`)
-  - Skills (dynamic workflows)
+  - Skills (dynamic workflows via `.cursor/skills/` and `.agents/skills/`)
   - AGENTS.md (nested instructions)
   - Hooks (`.cursor/hooks.json`)
-  - Generate Memories + Privacy Mode guidance
+  - Documentation-first continuity guidance with optional memory feature notes
   - Automations & Background/Cloud Agents
 
 ### 4.2 RIPER Evolution (High Priority)
@@ -612,8 +625,8 @@ Integrated-Cursor-AI-Agent-Rules-System/
 
 ### 4.4 Memory System (Medium Priority)
 - Deprecate heavy custom memory files
-- Recommend **Generate Memories** when Privacy Mode is off
-- Rely on strong documentation + `ROADMAP.md` when Privacy Mode must stay on
+- Keep strong documentation + `ROADMAP.md` as baseline continuity
+- Treat optional memory features as additive where available and policy-permitted
 
 ### 4.5 Documentation Maintenance (Medium Priority)
 - Add `documentation-maintainer` capability (integrated into reviewer-agent)
@@ -637,7 +650,7 @@ Update minimum versions in `011-cursor_project_rules.mdc`:
 | `011-cursor_project_rules.mdc`      | Update versions + modern patterns   | High priority |
 | `013-cursor_riper_rules.mdc`        | Evolve with subagent guidance       | Keep core philosophy |
 | `020-task_list.mdc`                 | Deprecate or remove                 | Replaced by ROADMAP.md |
-| `012-learned_memories.mdc`          | Deprecate                           | Use Generate Memories instead |
+| `012-learned_memories.mdc`          | Deprecate                           | Replace with documentation-first continuity + optional memory features |
 | New: `bootstrap-project` skill      | Create                              | Core of new install flow |
 | New: `reviewer-agent.md`            | Enhanced version                    | Includes documentation maintenance |
 | New: `roadmap-updater` skill        | Create                              | Maintains ROADMAP.md |
@@ -649,24 +662,25 @@ Update minimum versions in `011-cursor_project_rules.mdc`:
 
 ## 6. Priority & Next Steps
 
-### Priority Levels
+### Post-Phase-4 Priorities
 
-| Priority     | Items |
-|--------------|-------|
-| **High**     | Create `bootstrap-project` skill, update tech versions, add 2026 feature coverage, evolve RIPER with subagents |
-| **Medium-High** | Add staging directory + documentation, create `roadmap-updater` + enhanced `reviewer-agent` |
-| **Medium**   | Hooks examples, memory system guidance, full README refresh |
-| **Low**      | Reduce file count, advanced enterprise features |
+Phase 1-4 governance planning and sign-off are accepted. Remaining work is migration execution and release readiness:
 
-### Suggested Implementation Order
+| Priority | Items |
+|---|---|
+| **High** | Populate `staging/.cursor/` for all required runtime manifest rows; keep validator green in kit mode |
+| **High** | Drive every `migration-manifest.yaml` row to verified evidence status |
+| **Medium-High** | Resolve parity and consistency gaps across manifest, docs, and runtime payload |
+| **Medium** | Prepare public release gate package (including legacy removal readiness) |
 
-1. Create `bootstrap-project` skill + update `INSTALL.md` / `QUICKSTART.md`
-2. Update `011-cursor_project_rules.mdc` (tech versions)
-3. Set up `staging/` directory + documentation
-4. Enhance `reviewer-agent` with documentation maintenance
-5. Build RIPER + Subagents system
-6. Add Hooks examples
-7. Full README refresh with new philosophy
+### Suggested Execution Order
+
+1. Follow `docs/migration/Migration-Execution-Runbook.md` as canonical execution workflow.
+2. Process all manifest rows and apply row-status tracking (`unaddressed` -> `addressed-not-migrated` -> `migrated` -> `verified`).
+3. Migrate runtime rows into `staging/.cursor/{rules,agents,skills}` and externalize non-runtime material.
+4. Run `python scripts/validate_setup.py --mode kit` and capture evidence each cycle.
+5. Keep `legacy-system/` until `staging/.cursor/` is self-sufficient and all manifest rows are verified.
+6. Remove `legacy-system/` before first public release commit/tag once gates pass.
 
 ---
 

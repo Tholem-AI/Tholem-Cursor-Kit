@@ -1,5 +1,5 @@
 # Migration manifest: legacy-system/ inventory (see docs/migration/Cursor-Rules-System-2026-Improvements-Overview.md appendix).
-# Schema fields: legacyPath, classification, reason, owner, replacement, validation
+# Schema fields: legacyPath, classification, reason, owner, replacement, validation, status, statusHistory, statusNotes, evidenceRef
 manifestVersion: 1
 manifestReview:
   reviewedBy: Migration Governance
@@ -15,6 +15,10 @@ entries:
     owner: Runtime Core
     replacement: staging/.cursor/rules/010-cursor_general_rules.mdc (post-extraction)
     validation: "[NO_CLEANUP_PROOF] Present in manifest; copy validates via validate_setup.py --mode install on extracted tree"
+    status: addressed-not-migrated
+    statusHistory: "unaddressed -> addressed-not-migrated"
+    statusNotes: "Pre-migration owner/path/evidence defined; runtime extraction not started."
+    evidenceRef: docs/migration/Migration-Execution-Runbook.md
 
   - legacyPath: legacy-system/011-cursor_project_rules.mdc
     classification: runtime
@@ -22,6 +26,10 @@ entries:
     owner: Runtime Core
     replacement: staging/.cursor/rules/011-cursor_project_rules.mdc
     validation: "[NO_CLEANUP_PROOF] Referenced from bootstrap diff review in overview section 5"
+    status: addressed-not-migrated
+    statusHistory: "unaddressed -> addressed-not-migrated"
+    statusNotes: "Pre-migration owner/path/evidence defined; runtime extraction not started."
+    evidenceRef: docs/migration/Migration-Execution-Runbook.md
 
   - legacyPath: legacy-system/012-learned_memories.mdc
     classification: deprecated
@@ -29,6 +37,10 @@ entries:
     owner: Migration Governance
     replacement: docs/ + ROADMAP.md checkpoints; runtime memory rules only
     validation: Deprecation note in governance docs; not part of minimal runtime package
+    status: addressed-not-migrated
+    statusHistory: "unaddressed -> addressed-not-migrated"
+    statusNotes: "Deprecation path and governance evidence defined; sunset action not yet executed."
+    evidenceRef: docs/migration/Migration-Execution-Runbook.md
 
   - legacyPath: legacy-system/013-cursor_riper_rules.mdc
     classification: runtime
@@ -36,6 +48,10 @@ entries:
     owner: RIPER and Subagents
     replacement: staging/.cursor/rules/013-cursor_riper_rules.mdc
     validation: "[NO_CLEANUP_PROOF] Loads with limited v1 subagent topology per overview 4.2"
+    status: addressed-not-migrated
+    statusHistory: "unaddressed -> addressed-not-migrated"
+    statusNotes: "Pre-migration owner/path/evidence defined; runtime extraction not started."
+    evidenceRef: docs/migration/Migration-Execution-Runbook.md
 
   - legacyPath: legacy-system/020-task_list.mdc
     classification: deprecated
@@ -43,6 +59,10 @@ entries:
     owner: Migration Governance
     replacement: ROADMAP.md + roadmap-updater skill (Phase 2+)
     validation: No conflict with 030-cursor_task_rules.mdc after align; see overview 4.3
+    status: addressed-not-migrated
+    statusHistory: "unaddressed -> addressed-not-migrated"
+    statusNotes: "Deprecation path and successor defined; removal/migration action not yet executed."
+    evidenceRef: docs/migration/Migration-Execution-Runbook.md
 
   - legacyPath: legacy-system/021-cursor_environment_rules.mdc
     classification: runtime
@@ -50,6 +70,10 @@ entries:
     owner: Runtime Core
     replacement: staging/.cursor/rules/021-cursor_environment_rules.mdc
     validation: "[NO_CLEANUP_PROOF] Long tutorials moved to docs only per overview section 5"
+    status: addressed-not-migrated
+    statusHistory: "unaddressed -> addressed-not-migrated"
+    statusNotes: "Pre-migration owner/path/evidence defined; runtime extraction not started."
+    evidenceRef: docs/migration/Migration-Execution-Runbook.md
 
   - legacyPath: legacy-system/022-cursor_git_rules.mdc
     classification: runtime
@@ -57,6 +81,10 @@ entries:
     owner: Runtime Core
     replacement: staging/.cursor/rules/022-cursor_git_rules.mdc
     validation: "[NO_CLEANUP_PROOF] Rule applies without manual cleanup per overview section 5"
+    status: addressed-not-migrated
+    statusHistory: "unaddressed -> addressed-not-migrated"
+    statusNotes: "Pre-migration owner/path/evidence defined; runtime extraction not started."
+    evidenceRef: docs/migration/Migration-Execution-Runbook.md
 
   - legacyPath: legacy-system/030-cursor_task_rules.mdc
     classification: runtime
@@ -64,6 +92,10 @@ entries:
     owner: Runtime Core
     replacement: staging/.cursor/rules/030-cursor_task_rules.mdc
     validation: "[NO_CLEANUP_PROOF] No duplicate task-list system after 020 deprecation"
+    status: addressed-not-migrated
+    statusHistory: "unaddressed -> addressed-not-migrated"
+    statusNotes: "Pre-migration owner/path/evidence defined; runtime extraction not started."
+    evidenceRef: docs/migration/Migration-Execution-Runbook.md
 
   - legacyPath: legacy-system/031-cursor_memory_rules.mdc
     classification: runtime
@@ -71,6 +103,10 @@ entries:
     owner: Runtime Core
     replacement: staging/.cursor/rules/031-cursor_memory_rules.mdc
     validation: "[NO_CLEANUP_PROOF] Implements overview section 4.4 baseline"
+    status: addressed-not-migrated
+    statusHistory: "unaddressed -> addressed-not-migrated"
+    statusNotes: "Pre-migration owner/path/evidence defined; runtime extraction not started."
+    evidenceRef: docs/migration/Migration-Execution-Runbook.md
 
   - legacyPath: legacy-system/032-cursor_quality_rules.mdc
     classification: runtime
@@ -78,6 +114,10 @@ entries:
     owner: Runtime Core
     replacement: staging/.cursor/rules/032-cursor_quality_rules.mdc
     validation: "[NO_CLEANUP_PROOF] Operational-only content after trim per overview section 5"
+    status: addressed-not-migrated
+    statusHistory: "unaddressed -> addressed-not-migrated"
+    statusNotes: "Pre-migration owner/path/evidence defined; runtime extraction not started."
+    evidenceRef: docs/migration/Migration-Execution-Runbook.md
 
   - legacyPath: legacy-system/040-cursor_organization_rules.mdc
     classification: runtime
@@ -85,6 +125,10 @@ entries:
     owner: Runtime Core
     replacement: staging/.cursor/rules/040-cursor_organization_rules.mdc
     validation: "[NO_CLEANUP_PROOF] Narrative process notes live in docs only"
+    status: addressed-not-migrated
+    statusHistory: "unaddressed -> addressed-not-migrated"
+    statusNotes: "Pre-migration owner/path/evidence defined; runtime extraction not started."
+    evidenceRef: docs/migration/Migration-Execution-Runbook.md
 
   - legacyPath: legacy-system/090-completed_tasks.mdc
     classification: docs
@@ -92,6 +136,10 @@ entries:
     owner: Documentation and Examples
     replacement: docs/ reference section or archive link
     validation: Linked from migration docs; not loaded from .cursor/rules in minimal kit
+    status: addressed-not-migrated
+    statusHistory: "unaddressed -> addressed-not-migrated"
+    statusNotes: "Docs relocation target identified; migration action not yet executed."
+    evidenceRef: docs/migration/Migration-Execution-Runbook.md
 
   - legacyPath: legacy-system/091-learned_memories_archive.mdc
     classification: docs
@@ -99,6 +147,10 @@ entries:
     owner: Documentation and Examples
     replacement: docs/ archive reference
     validation: Linked from migration docs per overview section 5
+    status: addressed-not-migrated
+    statusHistory: "unaddressed -> addressed-not-migrated"
+    statusNotes: "Archive destination defined; movement/verification not yet executed."
+    evidenceRef: docs/migration/Migration-Execution-Runbook.md
 
   - legacyPath: legacy-system/CONTRIBUTING.md
     classification: docs
@@ -106,6 +158,10 @@ entries:
     owner: Documentation and Examples
     replacement: Root or docs/CONTRIBUTING.md after rewrite for 2026 workflow
     validation: Matches overview sections 2 and 3 after update
+    status: addressed-not-migrated
+    statusHistory: "unaddressed -> addressed-not-migrated"
+    statusNotes: "Rewrite target and validation defined; update not yet executed."
+    evidenceRef: docs/migration/Migration-Execution-Runbook.md
 
   - legacyPath: legacy-system/EXAMPLES.md
     classification: docs
@@ -113,6 +169,10 @@ entries:
     owner: Documentation and Examples
     replacement: examples/ or expanded EXAMPLES.md at repo root
     validation: Runtime rules cite this path instead of long samples
+    status: addressed-not-migrated
+    statusHistory: "unaddressed -> addressed-not-migrated"
+    statusNotes: "Reference destination defined; migration action not yet executed."
+    evidenceRef: docs/migration/Migration-Execution-Runbook.md
 
   - legacyPath: legacy-system/LICENSE
     classification: static
@@ -120,6 +180,10 @@ entries:
     owner: Migration Governance
     replacement: LICENSE at repository root (canonical)
     validation: Matches root LICENSE for release comparison
+    status: addressed-not-migrated
+    statusHistory: "unaddressed -> addressed-not-migrated"
+    statusNotes: "Static parity target defined; final parity verification pending."
+    evidenceRef: docs/migration/Migration-Execution-Runbook.md
 
   - legacyPath: legacy-system/README.md
     classification: docs
@@ -127,6 +191,10 @@ entries:
     owner: Documentation and Examples
     replacement: README.md at repository root
     validation: Install steps align with overview section 1 when updated
+    status: addressed-not-migrated
+    statusHistory: "unaddressed -> addressed-not-migrated"
+    statusNotes: "Documentation replacement target defined; migration action not yet executed."
+    evidenceRef: docs/migration/Migration-Execution-Runbook.md
 
   - legacyPath: legacy-system/scripts/README.md
     classification: docs
@@ -134,6 +202,10 @@ entries:
     owner: Documentation and Examples
     replacement: scripts/README.md at repository root
     validation: Documents kit vs install modes for validate_setup.py
+    status: addressed-not-migrated
+    statusHistory: "unaddressed -> addressed-not-migrated"
+    statusNotes: "Docs replacement target defined; migration action not yet executed."
+    evidenceRef: docs/migration/Migration-Execution-Runbook.md
 
   - legacyPath: legacy-system/scripts/validate_setup.py
     classification: runtime
@@ -141,3 +213,7 @@ entries:
     owner: Migration Governance
     replacement: scripts/validate_setup.py at repository root
     validation: "[NO_CLEANUP_PROOF] Legacy parity only; root script enforces manifest and staging layout"
+    status: addressed-not-migrated
+    statusHistory: "unaddressed -> addressed-not-migrated"
+    statusNotes: "Validator successor defined; migration and parity verification pending."
+    evidenceRef: docs/migration/Migration-Execution-Runbook.md

@@ -67,9 +67,21 @@ _KNOWN_FIELDS = frozenset(
         "owner",
         "replacement",
         "validation",
+        "status",
+        "statusHistory",
+        "statusNotes",
+        "evidenceRef",
     }
 )
 _CLASSIFICATIONS = frozenset({"runtime", "docs", "deprecated", "static"})
+_ROW_STATUSES = (
+    "unaddressed",
+    "addressed-not-migrated",
+    "migrated",
+    "verified",
+)
+_ROW_STATUS_SET = frozenset(_ROW_STATUSES)
+_ROW_STATUS_RANK = {name: idx for idx, name in enumerate(_ROW_STATUSES)}
 NO_CLEANUP_MARKER = "[NO_CLEANUP_PROOF]"
 PHASE1_REQUIRED_FILES: Dict[str, str] = {
     "inventory_baseline": "docs/migration/phase-1/inventory-baseline.md",
@@ -153,6 +165,12 @@ def _extract_status_value(text: str, prefix: str) -> Optional[str]:
             _, _, value = line.partition(":")
             return value.strip()
     return None
+
+
+def _parse_status_history(history: str) -> List[str]:
+    normalized = history.strip().strip("'").strip('"')
+    parts = [part.strip() for part in normalized.split("->")]
+    return [part for part in parts if part]
 
 
 def load_manifest(project_root: Path) -> List[Dict[str, str]]:
@@ -259,6 +277,8 @@ def validate_kit_repo(project_root: Path, result: ValidationResult) -> None:
     manifest_paths = []
     schema_errors = 0
     runtime_marker_errors = 0
+    release_ready = True
+    status_integrity_errors = 0
     for i, ent in enumerate(entries):
         lp = ent.get("legacyPath", "").strip()
         if not lp:
@@ -284,6 +304,77 @@ def validate_kit_repo(project_root: Path, result: ValidationResult) -> None:
                 if not ent.get(req):
                     result.add_error(f"{lp}: missing {req} (required by manifest schema)")
                     schema_errors += 1
+
+        row_status = ent.get("status", "").strip()
+        if row_status not in _ROW_STATUS_SET:
+            result.add_error(
+                f"{lp}: invalid status {row_status!r} (expected one of {_ROW_STATUS_SET})"
+            )
+            schema_errors += 1
+            status_integrity_errors += 1
+            release_ready = False
+        else:
+            if row_status == "verified":
+                for req in ("statusNotes", "evidenceRef"):
+                    if not ent.get(req):
+                        result.add_error(
+                            f"{lp}: status 'verified' requires non-empty {req}"
+                        )
+                        schema_errors += 1
+                        status_integrity_errors += 1
+            if row_status != "verified":
+                release_ready = False
+
+            history_value = ent.get("statusHistory", "").strip()
+            if not history_value:
+                result.add_error(f"{lp}: missing statusHistory (transition evidence)")
+                schema_errors += 1
+                status_integrity_errors += 1
+            else:
+                history_steps = _parse_status_history(history_value)
+                if not history_steps:
+                    result.add_error(f"{lp}: statusHistory is empty")
+                    schema_errors += 1
+                    status_integrity_errors += 1
+                else:
+                    invalid_steps = [s for s in history_steps if s not in _ROW_STATUS_SET]
+                    if invalid_steps:
+                        result.add_error(
+                            f"{lp}: statusHistory contains invalid states: {', '.join(invalid_steps)}"
+                        )
+                        schema_errors += 1
+                        status_integrity_errors += 1
+                    else:
+                        if history_steps[0] != "unaddressed":
+                            result.add_error(
+                                f"{lp}: statusHistory must begin with 'unaddressed'"
+                            )
+                            schema_errors += 1
+                            status_integrity_errors += 1
+                        if history_steps[-1] != row_status:
+                            result.add_error(
+                                f"{lp}: statusHistory terminal state '{history_steps[-1]}' "
+                                f"does not match status '{row_status}'"
+                            )
+                            schema_errors += 1
+                            status_integrity_errors += 1
+                        for prev, nxt in zip(history_steps, history_steps[1:]):
+                            if _ROW_STATUS_RANK[nxt] - _ROW_STATUS_RANK[prev] != 1:
+                                result.add_error(
+                                    f"{lp}: invalid status transition '{prev} -> {nxt}' "
+                                    "(must follow runbook order without skipping)"
+                                )
+                                schema_errors += 1
+                                status_integrity_errors += 1
+                                break
+
+            for req in ("statusNotes", "evidenceRef"):
+                if row_status != "unaddressed" and not ent.get(req):
+                    result.add_error(
+                        f"{lp}: status '{row_status}' requires non-empty {req}"
+                    )
+                    schema_errors += 1
+                    status_integrity_errors += 1
 
         if cls == "runtime":
             validation_text = ent.get("validation", "")
@@ -517,6 +608,19 @@ def validate_kit_repo(project_root: Path, result: ValidationResult) -> None:
         "criterion_phase4_signoff_accepted": phase4_signoff_accepted,
     }
     _print_phase4_summary(phase4_summary)
+
+    if status_integrity_errors == 0:
+        result.add_pass(
+            "Manifest row-status transitions are valid against runbook order "
+            "(unaddressed -> addressed-not-migrated -> migrated -> verified)"
+        )
+
+    if release_ready:
+        result.add_pass("Release-readiness gate: all manifest rows are verified")
+    else:
+        result.add_warning(
+            "Release-readiness gate not met: at least one manifest row is not verified"
+        )
 
 
 # --- consumer install validation (legacy rules layout) -----------------------

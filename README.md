@@ -1,6 +1,6 @@
 # Tholem-Cursor-Kit
 
-Minimal 2026 Cursor kit: migration work lives here while legacy sources stay under `legacy-system/`. Operational runtime for this repo should be developed under `staging/.cursor/` (rules, agents, skills).
+Minimal 2026 Cursor kit: migration work lives here while legacy sources stay under `legacy-system/`. Operational runtime for this repo is authored under `staging/.cursor/` as a repository workflow convention, then copied into active Cursor paths for testing (`.cursor/rules`, `.cursor/agents`, `.cursor/skills`, and `.agents/skills` where applicable).
 
 ## Governance and migration docs
 
