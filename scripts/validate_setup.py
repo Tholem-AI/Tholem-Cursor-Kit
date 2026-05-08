@@ -86,6 +86,31 @@ PHASE2_REQUIRED_FILES: Dict[str, str] = {
     "validation_rubric": "docs/migration/phase-2/phase-2-validation-rubric.md",
     "phase2_signoff": "docs/migration/phase-2/phase-2-signoff.md",
 }
+PHASE3_REQUIRED_FILES: Dict[str, str] = {
+    "topology_contract": "docs/migration/phase-3/riper-subagent-v1-topology-contract.md",
+    "handoff_checklist": "docs/migration/phase-3/orchestration-and-handoff-checklist.md",
+    "ownership_matrix": "docs/migration/phase-3/ownership-boundary-matrix.md",
+    "runtime_concision": "docs/migration/phase-3/runtime-artifact-concision-checklist.md",
+    "validation_rubric": "docs/migration/phase-3/phase-3-validation-rubric.md",
+    "phase3_signoff": "docs/migration/phase-3/phase-3-signoff.md",
+}
+PHASE3_INNOVATE_AUDIT_MARKERS: Dict[str, Tuple[str, ...]] = {
+    "topology_contract": (
+        "innovate checkpoint",
+        "planning-specific innovate checkpoint outputs",
+        "checkpoint_skipped: trivial_change",
+        "not a standalone v1 agent",
+    ),
+    "handoff_checklist": (
+        "planning handoff must additionally include innovate checkpoint fields when applicable",
+        "alternatives_considered",
+        "tradeoff_summary",
+        "selected_approach",
+        "rejected_options_reason",
+        "confidence_and_unknowns",
+        "checkpoint_skipped: trivial_change",
+    ),
+}
 
 
 def parse_migration_manifest(text: str) -> List[Dict[str, str]]:
@@ -163,6 +188,21 @@ def _print_phase2_summary(summary: Dict[str, bool]) -> None:
         ("Install/quickstart hardening artifacts present", "criterion_install_hardening"),
         ("Phase 2 validation rubric present", "criterion_validation_rubric"),
         ("Phase 2 signoff accepted", "criterion_phase2_signoff_accepted"),
+    ]
+    for label, key in ordered:
+        status = "[PASS]" if summary.get(key, False) else "[WARN]"
+        print(f"  {status} {label}")
+
+
+def _print_phase3_summary(summary: Dict[str, bool]) -> None:
+    print(f"\n{Colors.BOLD}Phase 3 Criteria Mapping:{Colors.END}")
+    ordered = [
+        ("RIPER/subagent v1 topology contract complete", "criterion_topology_contract"),
+        ("Orchestration and handoff protocol documented", "criterion_handoff_checklist"),
+        ("Innovate checkpoint auditable (no new agent)", "criterion_innovate_checkpoint_auditable"),
+        ("Ownership boundary matrix defined", "criterion_ownership_boundary"),
+        ("Runtime artifact concision policy defined", "criterion_runtime_concision"),
+        ("Phase 3 signoff accepted", "criterion_phase3_signoff_accepted"),
     ]
     for label, key in ordered:
         status = "[PASS]" if summary.get(key, False) else "[WARN]"
@@ -344,6 +384,72 @@ def validate_kit_repo(project_root: Path, result: ValidationResult) -> None:
         "criterion_phase2_signoff_accepted": phase2_signoff_accepted,
     }
     _print_phase2_summary(phase2_summary)
+
+    phase3_artifact_presence: Dict[str, bool] = {}
+    for key, rel_path in PHASE3_REQUIRED_FILES.items():
+        artifact_path = project_root / rel_path
+        phase3_artifact_presence[key] = artifact_path.is_file()
+        if phase3_artifact_presence[key]:
+            result.add_pass(f"Phase 3 artifact present: {rel_path}")
+        else:
+            result.add_warning(
+                f"Phase 3 artifact missing (expected during Phase 3 rollout): {rel_path}"
+            )
+
+    phase3_signoff_accepted = False
+    if phase3_artifact_presence.get("phase3_signoff", False):
+        phase3_signoff_text = (
+            project_root / PHASE3_REQUIRED_FILES["phase3_signoff"]
+        ).read_text(encoding="utf-8")
+        phase3_status = _extract_status_value(phase3_signoff_text, "Phase 3 Status")
+        phase3_signoff_accepted = phase3_status == "ACCEPTED"
+        if phase3_signoff_accepted:
+            result.add_pass("Phase 3 signoff indicates ACCEPTED status")
+        else:
+            result.add_warning("Phase 3 signoff is present but not yet ACCEPTED")
+
+    innovate_checkpoint_auditable = False
+    topology_present = phase3_artifact_presence.get("topology_contract", False)
+    handoff_present = phase3_artifact_presence.get("handoff_checklist", False)
+    if topology_present and handoff_present:
+        marker_missing: Dict[str, List[str]] = {}
+        for artifact_key in ("topology_contract", "handoff_checklist"):
+            rel_path = PHASE3_REQUIRED_FILES[artifact_key]
+            artifact_text = (project_root / rel_path).read_text(encoding="utf-8").lower()
+            missing = [
+                marker
+                for marker in PHASE3_INNOVATE_AUDIT_MARKERS[artifact_key]
+                if marker not in artifact_text
+            ]
+            if missing:
+                marker_missing[artifact_key] = missing
+        innovate_checkpoint_auditable = not marker_missing
+        if innovate_checkpoint_auditable:
+            result.add_pass(
+                "Phase 3 Innovate checkpoint markers present in topology and handoff artifacts"
+            )
+        else:
+            details = "; ".join(
+                f"{PHASE3_REQUIRED_FILES[key]} missing markers: {', '.join(missing)}"
+                for key, missing in marker_missing.items()
+            )
+            result.add_warning(
+                "Phase 3 Innovate checkpoint audit markers incomplete - " + details
+            )
+    else:
+        result.add_warning(
+            "Phase 3 Innovate checkpoint audit skipped: topology and handoff artifacts are required"
+        )
+
+    phase3_summary = {
+        "criterion_topology_contract": phase3_artifact_presence.get("topology_contract", False),
+        "criterion_handoff_checklist": phase3_artifact_presence.get("handoff_checklist", False),
+        "criterion_innovate_checkpoint_auditable": innovate_checkpoint_auditable,
+        "criterion_ownership_boundary": phase3_artifact_presence.get("ownership_matrix", False),
+        "criterion_runtime_concision": phase3_artifact_presence.get("runtime_concision", False),
+        "criterion_phase3_signoff_accepted": phase3_signoff_accepted,
+    }
+    _print_phase3_summary(phase3_summary)
 
 
 # --- consumer install validation (legacy rules layout) -----------------------
