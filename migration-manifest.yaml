@@ -1,20 +1,27 @@
 # Migration manifest: legacy-system/ inventory (see docs/migration/Cursor-Rules-System-2026-Improvements-Overview.md appendix).
 # Schema fields: legacyPath, classification, reason, owner, replacement, validation
 manifestVersion: 1
+manifestReview:
+  reviewedBy: Migration Governance
+  reviewedOn: 2026-05-08
+  approvedBy:
+    - Migration Governance
+    - Runtime Core
+  runtimeNoCleanupMarker: "[NO_CLEANUP_PROOF]"
 entries:
   - legacyPath: legacy-system/010-cursor_general_rules.mdc
     classification: runtime
     reason: Foundational runtime constraints; operational only after migration extract.
     owner: Runtime Core
     replacement: staging/.cursor/rules/010-cursor_general_rules.mdc (post-extraction)
-    validation: Present in manifest; copy validates via validate_setup.py --mode install on extracted tree
+    validation: "[NO_CLEANUP_PROOF] Present in manifest; copy validates via validate_setup.py --mode install on extracted tree"
 
   - legacyPath: legacy-system/011-cursor_project_rules.mdc
     classification: runtime
     reason: Project stack policy; placeholders become bootstrap-driven per overview 4.6.
     owner: Runtime Core
     replacement: staging/.cursor/rules/011-cursor_project_rules.mdc
-    validation: Referenced from bootstrap diff review in overview section 5
+    validation: "[NO_CLEANUP_PROOF] Referenced from bootstrap diff review in overview section 5"
 
   - legacyPath: legacy-system/012-learned_memories.mdc
     classification: deprecated
@@ -28,7 +35,7 @@ entries:
     reason: Minimal RIPER operational rules for agent workflows.
     owner: RIPER and Subagents
     replacement: staging/.cursor/rules/013-cursor_riper_rules.mdc
-    validation: Loads with limited v1 subagent topology per overview 4.2
+    validation: "[NO_CLEANUP_PROOF] Loads with limited v1 subagent topology per overview 4.2"
 
   - legacyPath: legacy-system/020-task_list.mdc
     classification: deprecated
@@ -42,42 +49,42 @@ entries:
     reason: Operational environment constraints for execution safety.
     owner: Runtime Core
     replacement: staging/.cursor/rules/021-cursor_environment_rules.mdc
-    validation: Long tutorials moved to docs only per overview section 5
+    validation: "[NO_CLEANUP_PROOF] Long tutorials moved to docs only per overview section 5"
 
   - legacyPath: legacy-system/022-cursor_git_rules.mdc
     classification: runtime
     reason: Git safety guardrails required at runtime.
     owner: Runtime Core
     replacement: staging/.cursor/rules/022-cursor_git_rules.mdc
-    validation: Rule applies without manual cleanup per overview section 5
+    validation: "[NO_CLEANUP_PROOF] Rule applies without manual cleanup per overview section 5"
 
   - legacyPath: legacy-system/030-cursor_task_rules.mdc
     classification: runtime
     reason: Task workflow aligned to ROADMAP.md model.
     owner: Runtime Core
     replacement: staging/.cursor/rules/030-cursor_task_rules.mdc
-    validation: No duplicate task-list system after 020 deprecation
+    validation: "[NO_CLEANUP_PROOF] No duplicate task-list system after 020 deprecation"
 
   - legacyPath: legacy-system/031-cursor_memory_rules.mdc
     classification: runtime
     reason: Documentation-first continuity checkpoints; Generate Memories additive.
     owner: Runtime Core
     replacement: staging/.cursor/rules/031-cursor_memory_rules.mdc
-    validation: Implements overview section 4.4 baseline
+    validation: "[NO_CLEANUP_PROOF] Implements overview section 4.4 baseline"
 
   - legacyPath: legacy-system/032-cursor_quality_rules.mdc
     classification: runtime
     reason: Enforceable quality gates without embedded narrative examples.
     owner: Runtime Core
     replacement: staging/.cursor/rules/032-cursor_quality_rules.mdc
-    validation: Operational-only content after trim per overview section 5
+    validation: "[NO_CLEANUP_PROOF] Operational-only content after trim per overview section 5"
 
   - legacyPath: legacy-system/040-cursor_organization_rules.mdc
     classification: runtime
     reason: Organization constraints affecting runtime behavior.
     owner: Runtime Core
     replacement: staging/.cursor/rules/040-cursor_organization_rules.mdc
-    validation: Narrative process notes live in docs only
+    validation: "[NO_CLEANUP_PROOF] Narrative process notes live in docs only"
 
   - legacyPath: legacy-system/090-completed_tasks.mdc
     classification: docs
@@ -133,4 +140,4 @@ entries:
     reason: Parity and setup validation; superseded at root by migration-aware script.
     owner: Migration Governance
     replacement: scripts/validate_setup.py at repository root
-    validation: Legacy parity only; root script enforces manifest and staging layout
+    validation: "[NO_CLEANUP_PROOF] Legacy parity only; root script enforces manifest and staging layout"

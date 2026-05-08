@@ -79,6 +79,16 @@ Deliverable:
 Deliverable:
 - `Manifest Spec` and `Validation Rubric` (planning artifacts).
 
+### Deliverables Location
+
+Phase 1 governance artifacts are maintained in:
+
+- `docs/migration/phase-1/inventory-baseline.md`
+- `docs/migration/phase-1/classification-decision-log.md`
+- `docs/migration/phase-1/runtime-contract-checklist.md`
+- `docs/migration/phase-1/manifest-spec-and-validation-rubric.md`
+- `docs/migration/phase-1/phase-1-signoff.md`
+
 ## Owners and Decision Rights
 
 - **Migration Governance (primary approver):**
@@ -118,6 +128,13 @@ Phase 1 is complete when all are true:
 4. Approve runtime contract checklist.
 5. Approve manifest spec and validation rubric.
 6. Sign off Phase 1 exit criteria.
+
+## Completion Workflow
+
+1. Ensure all deliverables under `docs/migration/phase-1/` are present and current.
+2. Run `python scripts/validate_setup.py --mode kit`.
+3. If validation passes with zero errors, record final sign-off in `docs/migration/phase-1/phase-1-signoff.md`.
+4. Mark "Phase 1 Status: ACCEPTED" in the sign-off document.
 
 ## Handoff to Phase 2
 

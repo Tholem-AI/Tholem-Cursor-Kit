@@ -139,6 +139,7 @@ All current project-root files are listed with explicit disposition.
 | `091-learned_memories_archive.mdc` | docs | Archive as reference-only historical material outside runtime payload | Historical context, not runtime | Documentation and Examples | Linked from migration docs as archive |
 | `docs/migration/Cursor-Rules-System-2026-Improvements-Overview.md` | docs | Keep as canonical strategy document; maintain consistency with migration matrix and section 5 | Governance source | Migration Governance | Cross-check passes with runtime policy and manifest schema |
 | `docs/migration/Phase-1-Minimal-Runtime-Foundation-Plan.md` | docs | Planning-only Phase 1 blueprint; source sections reference the overview | Phase 1 governance | Migration Governance | Linked from README and overview |
+| `docs/migration/phase-1/*` | docs | Maintain explicit Phase 1 deliverables and sign-off evidence | Approval artifacts for Phase 1 exit criteria | Migration Governance | `python scripts/validate_setup.py --mode kit` requires all artifacts |
 | `migration-manifest.yaml` | static | Track legacy-system inventory and classification through migration | Traceability for parity gates | Migration Governance | Validates with `python scripts/validate_setup.py` (kit repo) |
 | `scripts/README.md` | docs | Update script usage docs to support migration validation and parity checks | Developer support docs | Documentation and Examples | Script docs map to validation column actions |
 | `scripts/validate_setup.py` | runtime | Update validation checks for runtime/reference boundary and no-cleanup acceptance | Enforces migration quality gates | Migration Governance | Script validates required acceptance criteria |
@@ -184,6 +185,14 @@ Manifest fields per file:
 ### Phase 1: Runtime Foundation
 - Inventory files and classify with matrix.
 - Minimize runtime payload.
+- Require explicit governance artifacts under `docs/migration/phase-1/`.
+
+Phase 1 approval artifacts:
+- `docs/migration/phase-1/inventory-baseline.md`
+- `docs/migration/phase-1/classification-decision-log.md`
+- `docs/migration/phase-1/runtime-contract-checklist.md`
+- `docs/migration/phase-1/manifest-spec-and-validation-rubric.md`
+- `docs/migration/phase-1/phase-1-signoff.md` (must include `Phase 1 Status: ACCEPTED`)
 
 ### Phase 2: Bootstrap Hardening
 - Enforce requirements-driven stack inference and review-gated placeholder updates.

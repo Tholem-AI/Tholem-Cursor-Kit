@@ -15,4 +15,8 @@ Canonical strategy and Phase 1 planning (do not duplicate under `dev-docs/`):
 python scripts/validate_setup.py
 ```
 
+Phase 1 completion record:
+
+- [docs/migration/phase-1/phase-1-signoff.md](docs/migration/phase-1/phase-1-signoff.md)
+
 See [INSTALL.md](INSTALL.md) and [QUICKSTART.md](QUICKSTART.md) for install notes (placeholders until Phase 2).

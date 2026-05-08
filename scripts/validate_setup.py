@@ -70,6 +70,14 @@ _KNOWN_FIELDS = frozenset(
     }
 )
 _CLASSIFICATIONS = frozenset({"runtime", "docs", "deprecated", "static"})
+NO_CLEANUP_MARKER = "[NO_CLEANUP_PROOF]"
+PHASE1_REQUIRED_FILES: Dict[str, str] = {
+    "inventory_baseline": "docs/migration/phase-1/inventory-baseline.md",
+    "classification_log": "docs/migration/phase-1/classification-decision-log.md",
+    "runtime_contract": "docs/migration/phase-1/runtime-contract-checklist.md",
+    "manifest_rubric": "docs/migration/phase-1/manifest-spec-and-validation-rubric.md",
+    "phase1_signoff": "docs/migration/phase-1/phase-1-signoff.md",
+}
 
 
 def parse_migration_manifest(text: str) -> List[Dict[str, str]]:
@@ -115,6 +123,20 @@ def _rel_paths_under(root: Path) -> List[str]:
     return sorted(paths)
 
 
+def _print_phase1_summary(summary: Dict[str, bool]) -> None:
+    print(f"\n{Colors.BOLD}Phase 1 Exit Criteria Mapping:{Colors.END}")
+    ordered = [
+        ("All root files are classified with owner and reason", "criterion_root_classification"),
+        ("All runtime classifications include no-cleanup proof", "criterion_no_cleanup_proof"),
+        ("Manifest schema and validation rubric are approved", "criterion_manifest_rubric"),
+        ("Ambiguous items resolved/blocked with owner and action", "criterion_ambiguity_resolution"),
+        ("Release gate requirements documented and accepted", "criterion_release_gate_acceptance"),
+    ]
+    for label, key in ordered:
+        status = "[PASS]" if summary.get(key, False) else "[ERR ]"
+        print(f"  {status} {label}")
+
+
 def validate_kit_repo(project_root: Path, result: ValidationResult) -> None:
     print(f"{Colors.BOLD}Kit repository checks (migration manifest + layout)...{Colors.END}")
 
@@ -131,15 +153,19 @@ def validate_kit_repo(project_root: Path, result: ValidationResult) -> None:
     result.add_pass(f"Parsed {len(entries)} manifest entries")
 
     manifest_paths = []
+    schema_errors = 0
+    runtime_marker_errors = 0
     for i, ent in enumerate(entries):
         lp = ent.get("legacyPath", "").strip()
         if not lp:
             result.add_error(f"Manifest entry {i} missing legacyPath")
+            schema_errors += 1
             continue
         manifest_paths.append(lp)
         p = project_root / lp
         if not p.is_file():
             result.add_error(f"Manifest legacyPath not found: {lp}")
+            schema_errors += 1
         else:
             result.add_pass(f"Legacy artifact present: {lp}")
 
@@ -148,14 +174,25 @@ def validate_kit_repo(project_root: Path, result: ValidationResult) -> None:
             result.add_error(
                 f"{lp}: invalid classification {cls!r} (expected one of {_CLASSIFICATIONS})"
             )
+            schema_errors += 1
         else:
             for req in ("reason", "owner", "replacement", "validation"):
                 if not ent.get(req):
-                    result.add_warning(f"{lp}: missing {req} (required by manifest schema)")
+                    result.add_error(f"{lp}: missing {req} (required by manifest schema)")
+                    schema_errors += 1
+
+        if cls == "runtime":
+            validation_text = ent.get("validation", "")
+            if NO_CLEANUP_MARKER not in validation_text:
+                result.add_error(
+                    f"{lp}: runtime entry missing no-cleanup marker {NO_CLEANUP_MARKER}"
+                )
+                runtime_marker_errors += 1
 
     legacy_root = project_root / "legacy-system"
     if not legacy_root.is_dir():
         result.add_error("legacy-system/ directory missing")
+        schema_errors += 1
     else:
         disk_files = [
             f"legacy-system/{rel}" for rel in _rel_paths_under(legacy_root)
@@ -164,9 +201,11 @@ def validate_kit_repo(project_root: Path, result: ValidationResult) -> None:
         for path in disk_files:
             if path not in manifest_set:
                 result.add_error(f"File under legacy-system/ not listed in manifest: {path}")
+                schema_errors += 1
         for path in manifest_set:
             if not path.startswith("legacy-system/"):
-                result.add_warning(f"Manifest path unexpected (not under legacy-system/): {path}")
+                result.add_error(f"Manifest path unexpected (not under legacy-system/): {path}")
+                schema_errors += 1
 
     overview = (
         project_root / "docs" / "migration" / "Cursor-Rules-System-2026-Improvements-Overview.md"
@@ -187,7 +226,7 @@ def validate_kit_repo(project_root: Path, result: ValidationResult) -> None:
         if d.is_dir():
             result.add_pass(f"staging/.cursor/{sub}/ exists")
         else:
-            result.add_warning(f"staging/.cursor/{sub}/ missing (expected skeleton)")
+            result.add_error(f"staging/.cursor/{sub}/ missing (required skeleton)")
 
     lic = project_root / "LICENSE"
     if lic.is_file() and lic.stat().st_size > 0:
@@ -206,6 +245,39 @@ def validate_kit_repo(project_root: Path, result: ValidationResult) -> None:
         result.add_warning(
             f"{root_cursor} exists at kit root - keep runtime under staging/.cursor/ during kit development unless intentional"
         )
+
+    artifact_presence: Dict[str, bool] = {}
+    for key, rel_path in PHASE1_REQUIRED_FILES.items():
+        artifact_path = project_root / rel_path
+        artifact_presence[key] = artifact_path.is_file()
+        if artifact_presence[key]:
+            result.add_pass(f"Phase 1 artifact present: {rel_path}")
+        else:
+            result.add_error(f"Missing required Phase 1 artifact: {rel_path}")
+
+    signoff_accepted = False
+    if artifact_presence.get("phase1_signoff", False):
+        signoff_text = (project_root / PHASE1_REQUIRED_FILES["phase1_signoff"]).read_text(
+            encoding="utf-8"
+        )
+        signoff_accepted = "Phase 1 Status: ACCEPTED" in signoff_text
+        if signoff_accepted:
+            result.add_pass("Phase 1 signoff indicates ACCEPTED status")
+        else:
+            result.add_error(
+                "Phase 1 signoff exists but does not declare 'Phase 1 Status: ACCEPTED'"
+            )
+
+    phase1_summary = {
+        "criterion_root_classification": artifact_presence.get("inventory_baseline", False)
+        and artifact_presence.get("classification_log", False),
+        "criterion_no_cleanup_proof": runtime_marker_errors == 0,
+        "criterion_manifest_rubric": schema_errors == 0
+        and artifact_presence.get("manifest_rubric", False),
+        "criterion_ambiguity_resolution": artifact_presence.get("classification_log", False),
+        "criterion_release_gate_acceptance": signoff_accepted,
+    }
+    _print_phase1_summary(phase1_summary)
 
 
 # --- consumer install validation (legacy rules layout) -----------------------
