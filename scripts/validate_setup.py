@@ -94,6 +94,14 @@ PHASE3_REQUIRED_FILES: Dict[str, str] = {
     "validation_rubric": "docs/migration/phase-3/phase-3-validation-rubric.md",
     "phase3_signoff": "docs/migration/phase-3/phase-3-signoff.md",
 }
+PHASE4_REQUIRED_FILES: Dict[str, str] = {
+    "optional_pack_architecture": "docs/migration/phase-4/optional-pack-architecture-contract.md",
+    "hooks_guardrails": "docs/migration/phase-4/hooks-guardrails-and-activation-checklist.md",
+    "advanced_topology": "docs/migration/phase-4/advanced-topology-expansion-contract.md",
+    "docs_continuity": "docs/migration/phase-4/optional-pack-documentation-continuity-baseline.md",
+    "validation_rubric": "docs/migration/phase-4/phase-4-validation-rubric.md",
+    "phase4_signoff": "docs/migration/phase-4/phase-4-signoff.md",
+}
 PHASE3_INNOVATE_AUDIT_MARKERS: Dict[str, Tuple[str, ...]] = {
     "topology_contract": (
         "innovate checkpoint",
@@ -203,6 +211,30 @@ def _print_phase3_summary(summary: Dict[str, bool]) -> None:
         ("Ownership boundary matrix defined", "criterion_ownership_boundary"),
         ("Runtime artifact concision policy defined", "criterion_runtime_concision"),
         ("Phase 3 signoff accepted", "criterion_phase3_signoff_accepted"),
+    ]
+    for label, key in ordered:
+        status = "[PASS]" if summary.get(key, False) else "[WARN]"
+        print(f"  {status} {label}")
+
+
+def _print_phase4_summary(summary: Dict[str, bool]) -> None:
+    print(f"\n{Colors.BOLD}Phase 4 Criteria Mapping:{Colors.END}")
+    ordered = [
+        (
+            "Optional-pack architecture contract complete",
+            "criterion_optional_pack_architecture",
+        ),
+        ("Hooks guardrails and activation policy defined", "criterion_hooks_guardrails"),
+        (
+            "Advanced topology expansion constraints defined",
+            "criterion_advanced_topology",
+        ),
+        (
+            "Optional-pack documentation continuity baseline defined",
+            "criterion_docs_continuity",
+        ),
+        ("Phase 4 validation rubric present", "criterion_validation_rubric"),
+        ("Phase 4 signoff accepted", "criterion_phase4_signoff_accepted"),
     ]
     for label, key in ordered:
         status = "[PASS]" if summary.get(key, False) else "[WARN]"
@@ -450,6 +482,41 @@ def validate_kit_repo(project_root: Path, result: ValidationResult) -> None:
         "criterion_phase3_signoff_accepted": phase3_signoff_accepted,
     }
     _print_phase3_summary(phase3_summary)
+
+    phase4_artifact_presence: Dict[str, bool] = {}
+    for key, rel_path in PHASE4_REQUIRED_FILES.items():
+        artifact_path = project_root / rel_path
+        phase4_artifact_presence[key] = artifact_path.is_file()
+        if phase4_artifact_presence[key]:
+            result.add_pass(f"Phase 4 artifact present: {rel_path}")
+        else:
+            result.add_warning(
+                f"Phase 4 artifact missing (expected during Phase 4 rollout): {rel_path}"
+            )
+
+    phase4_signoff_accepted = False
+    if phase4_artifact_presence.get("phase4_signoff", False):
+        phase4_signoff_text = (
+            project_root / PHASE4_REQUIRED_FILES["phase4_signoff"]
+        ).read_text(encoding="utf-8")
+        phase4_status = _extract_status_value(phase4_signoff_text, "Phase 4 Status")
+        phase4_signoff_accepted = phase4_status == "ACCEPTED"
+        if phase4_signoff_accepted:
+            result.add_pass("Phase 4 signoff indicates ACCEPTED status")
+        else:
+            result.add_warning("Phase 4 signoff is present but not yet ACCEPTED")
+
+    phase4_summary = {
+        "criterion_optional_pack_architecture": phase4_artifact_presence.get(
+            "optional_pack_architecture", False
+        ),
+        "criterion_hooks_guardrails": phase4_artifact_presence.get("hooks_guardrails", False),
+        "criterion_advanced_topology": phase4_artifact_presence.get("advanced_topology", False),
+        "criterion_docs_continuity": phase4_artifact_presence.get("docs_continuity", False),
+        "criterion_validation_rubric": phase4_artifact_presence.get("validation_rubric", False),
+        "criterion_phase4_signoff_accepted": phase4_signoff_accepted,
+    }
+    _print_phase4_summary(phase4_summary)
 
 
 # --- consumer install validation (legacy rules layout) -----------------------

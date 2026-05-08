@@ -10,6 +10,7 @@ Canonical strategy and Phase 1 planning (do not duplicate under `dev-docs/`):
 - [docs/migration/Phase-1-Minimal-Runtime-Foundation-Plan.md](docs/migration/Phase-1-Minimal-Runtime-Foundation-Plan.md)
 - [docs/migration/Phase-2-Bootstrap-Hardening-Plan.md](docs/migration/Phase-2-Bootstrap-Hardening-Plan.md)
 - [docs/migration/Phase-3-RIPER-Subagent-v1-Plan.md](docs/migration/Phase-3-RIPER-Subagent-v1-Plan.md)
+- [docs/migration/Phase-4-Optional-Advanced-Packs-Plan.md](docs/migration/Phase-4-Optional-Advanced-Packs-Plan.md)
 
 `migration-manifest.yaml` classifies every file under `legacy-system/`. Validate layout with:
 
@@ -36,5 +37,14 @@ Phase 1 completion record:
 - Validation gate: `python scripts/validate_setup.py --mode kit`
 - Recorded result: `Passed: 47`, `Warnings: 0`, `Errors: 0`
 - Mapping outcome: all six Phase 3 criteria `[PASS]` (including Innovate checkpoint auditability)
+
+## Phase 4 closure
+
+- Status: `ACCEPTED` (2026-05-08)
+- Sign-off: [docs/migration/phase-4/phase-4-signoff.md](docs/migration/phase-4/phase-4-signoff.md)
+- Validation gate: `python scripts/validate_setup.py --mode kit`
+- Recorded result: `Passed: 54`, `Warnings: 0`, `Errors: 0`
+- Mapping outcome: all six Phase 4 criteria `[PASS]`
+- Artifacts: [docs/migration/phase-4/](docs/migration/phase-4/)
 
 See [INSTALL.md](INSTALL.md) and [QUICKSTART.md](QUICKSTART.md) for canonical Tier A/Tier B install and bootstrap guidance.
