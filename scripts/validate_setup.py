@@ -78,6 +78,14 @@ PHASE1_REQUIRED_FILES: Dict[str, str] = {
     "manifest_rubric": "docs/migration/phase-1/manifest-spec-and-validation-rubric.md",
     "phase1_signoff": "docs/migration/phase-1/phase-1-signoff.md",
 }
+PHASE2_REQUIRED_FILES: Dict[str, str] = {
+    "inference_contract": "docs/migration/phase-2/bootstrap-inference-contract.md",
+    "review_gate": "docs/migration/phase-2/bootstrap-review-gate-checklist.md",
+    "continuity_baseline": "docs/migration/phase-2/documentation-continuity-baseline.md",
+    "install_hardening": "docs/migration/phase-2/install-quickstart-hardening-checklist.md",
+    "validation_rubric": "docs/migration/phase-2/phase-2-validation-rubric.md",
+    "phase2_signoff": "docs/migration/phase-2/phase-2-signoff.md",
+}
 
 
 def parse_migration_manifest(text: str) -> List[Dict[str, str]]:
@@ -103,6 +111,15 @@ def parse_migration_manifest(text: str) -> List[Dict[str, str]]:
     if current:
         entries.append(current)
     return entries
+
+
+def _extract_status_value(text: str, prefix: str) -> Optional[str]:
+    for raw in text.splitlines():
+        line = raw.strip()
+        if line.startswith(prefix):
+            _, _, value = line.partition(":")
+            return value.strip()
+    return None
 
 
 def load_manifest(project_root: Path) -> List[Dict[str, str]]:
@@ -134,6 +151,21 @@ def _print_phase1_summary(summary: Dict[str, bool]) -> None:
     ]
     for label, key in ordered:
         status = "[PASS]" if summary.get(key, False) else "[ERR ]"
+        print(f"  {status} {label}")
+
+
+def _print_phase2_summary(summary: Dict[str, bool]) -> None:
+    print(f"\n{Colors.BOLD}Phase 2 Criteria Mapping:{Colors.END}")
+    ordered = [
+        ("Bootstrap inference contract complete", "criterion_inference_contract"),
+        ("Bootstrap review gate documented", "criterion_review_gate"),
+        ("Documentation continuity baseline defined", "criterion_continuity_baseline"),
+        ("Install/quickstart hardening artifacts present", "criterion_install_hardening"),
+        ("Phase 2 validation rubric present", "criterion_validation_rubric"),
+        ("Phase 2 signoff accepted", "criterion_phase2_signoff_accepted"),
+    ]
+    for label, key in ordered:
+        status = "[PASS]" if summary.get(key, False) else "[WARN]"
         print(f"  {status} {label}")
 
 
@@ -260,7 +292,8 @@ def validate_kit_repo(project_root: Path, result: ValidationResult) -> None:
         signoff_text = (project_root / PHASE1_REQUIRED_FILES["phase1_signoff"]).read_text(
             encoding="utf-8"
         )
-        signoff_accepted = "Phase 1 Status: ACCEPTED" in signoff_text
+        phase1_status = _extract_status_value(signoff_text, "Phase 1 Status")
+        signoff_accepted = phase1_status == "ACCEPTED"
         if signoff_accepted:
             result.add_pass("Phase 1 signoff indicates ACCEPTED status")
         else:
@@ -278,6 +311,39 @@ def validate_kit_repo(project_root: Path, result: ValidationResult) -> None:
         "criterion_release_gate_acceptance": signoff_accepted,
     }
     _print_phase1_summary(phase1_summary)
+
+    phase2_artifact_presence: Dict[str, bool] = {}
+    for key, rel_path in PHASE2_REQUIRED_FILES.items():
+        artifact_path = project_root / rel_path
+        phase2_artifact_presence[key] = artifact_path.is_file()
+        if phase2_artifact_presence[key]:
+            result.add_pass(f"Phase 2 artifact present: {rel_path}")
+        else:
+            result.add_warning(
+                f"Phase 2 artifact missing (expected during Phase 2 rollout): {rel_path}"
+            )
+
+    phase2_signoff_accepted = False
+    if phase2_artifact_presence.get("phase2_signoff", False):
+        phase2_signoff_text = (
+            project_root / PHASE2_REQUIRED_FILES["phase2_signoff"]
+        ).read_text(encoding="utf-8")
+        phase2_status = _extract_status_value(phase2_signoff_text, "Phase 2 Status")
+        phase2_signoff_accepted = phase2_status == "ACCEPTED"
+        if phase2_signoff_accepted:
+            result.add_pass("Phase 2 signoff indicates ACCEPTED status")
+        else:
+            result.add_warning("Phase 2 signoff is present but not yet ACCEPTED")
+
+    phase2_summary = {
+        "criterion_inference_contract": phase2_artifact_presence.get("inference_contract", False),
+        "criterion_review_gate": phase2_artifact_presence.get("review_gate", False),
+        "criterion_continuity_baseline": phase2_artifact_presence.get("continuity_baseline", False),
+        "criterion_install_hardening": phase2_artifact_presence.get("install_hardening", False),
+        "criterion_validation_rubric": phase2_artifact_presence.get("validation_rubric", False),
+        "criterion_phase2_signoff_accepted": phase2_signoff_accepted,
+    }
+    _print_phase2_summary(phase2_summary)
 
 
 # --- consumer install validation (legacy rules layout) -----------------------
