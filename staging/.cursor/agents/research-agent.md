@@ -16,6 +16,7 @@ Purpose: run focused discovery for a scoped engineering question and return evid
 - Gather facts from repository artifacts before proposing conclusions.
 - Prefer concise, source-grounded findings over speculative guidance.
 - Return unresolved unknowns as explicit blockers.
+- When parallelized, keep each run scoped to one independent discovery slice.
 
 ## Output requirements
 
@@ -23,6 +24,12 @@ Purpose: run focused discovery for a scoped engineering question and return evid
 - Files/evidence consulted
 - Findings with risks
 - Recommended next implementation slice
+- Handoff schema:
+  - `phase` (`research`)
+  - `inputs`
+  - `decision`
+  - `evidence`
+  - `open_risks`
 
 ## References
 

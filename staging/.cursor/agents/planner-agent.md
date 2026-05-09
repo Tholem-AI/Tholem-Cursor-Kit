@@ -37,11 +37,20 @@ Skip innovate checkpoint only when explicitly trivial, and emit:
 ## Output requirements
 
 - Ordered tasks
+- Exact files/paths expected to change
+- Dependency ordering constraints
 - Required artifacts
 - Validation gates
+- Testing strategy tied to validation gates
 - Blockers and contingency path
 - Documentation impacts, including whether updates are required for
   `docs/File-Structure-Reference.md` and `docs/Project-Constraints.md`
+- Handoff schema:
+  - `phase` (`plan`)
+  - `inputs`
+  - `decision`
+  - `evidence`
+  - `open_risks`
 
 ## References
 

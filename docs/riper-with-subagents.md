@@ -69,9 +69,30 @@ The kit includes a `riper-orchestrator` skill that guides RIPER sequencing and e
 - Enforce milestones and validator gates
 - Require review and documentation continuity checks before closure
 
+Important runtime detail:
+
+- The skill and `.cursor/agents` are separate surfaces.
+- The skill guides orchestration behavior; subagent files define role contracts.
+- Delegation is prompt-driven (or model-selected), not hard-wired file binding.
+
 ### Example Prompt
 
 > "Use the riper-orchestrator skill to implement the notification system: run scoped research first, perform innovate checkpoint during planning, execute independent slices in parallel where safe, and finish with reviewer-agent."
+
+### Prompt Crafting for Parallel Execution
+
+For reliable parallel execution behavior, craft prompts with explicit routing and
+coupling constraints:
+
+- Name the target subagent explicitly (`executor-agent`).
+- Enumerate independent slices by module/path.
+- State coupling guardrails (shared state, shared schema, and migrations remain
+  sequential).
+- Require per-slice handoff outputs before `reviewer-agent` synthesis.
+
+Reusable trigger phrase:
+
+> "Execute approved slices in parallel using executor-agent only for independent modules (`<sliceA>`, `<sliceB>`); keep shared-state work sequential; return one handoff per slice using phase/inputs/decision/evidence/open_risks, then run reviewer-agent on merged outputs."
 
 ## Handoff Checklist
 

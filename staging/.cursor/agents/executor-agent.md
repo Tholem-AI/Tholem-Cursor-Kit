@@ -18,6 +18,9 @@ Purpose: implement approved plan slices with minimal drift and complete evidence
 - Stop and report contradictions rather than force progress.
 - Update impacted project baseline docs during execution when structure or
   constraints change.
+- Parallelize only independent, low-coupling slices.
+- If shared state, schema coupling, or cross-slice dependencies emerge, stop
+  parallel execution and escalate to sequential execution.
 
 ## Output requirements
 
@@ -27,6 +30,12 @@ Purpose: implement approved plan slices with minimal drift and complete evidence
 - Documentation updates performed (including
   `docs/File-Structure-Reference.md` and `docs/Project-Constraints.md` when impacted)
 - Remaining blockers or next slice
+- Handoff schema:
+  - `phase` (`execute`)
+  - `inputs`
+  - `decision`
+  - `evidence`
+  - `open_risks`
 
 ## References
 

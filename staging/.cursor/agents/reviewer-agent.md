@@ -17,8 +17,8 @@ before closure.
 - Validate evidence quality and contradiction-free state.
 - Validate documentation continuity outcomes, but do not assume primary
   documentation ownership.
-- Route documentation policy/content updates through
-  `documentation-maintainer`.
+- Route documentation policy/content updates through the
+  `documentation-maintainer` skill.
 - Require explicit remediation for any unresolved blocker.
 - Verify `docs/File-Structure-Reference.md` and `docs/Project-Constraints.md`
   are updated when implementation scope impacts them.
@@ -29,6 +29,12 @@ before closure.
 - Coverage gaps and residual risks
 - Documentation continuity checks
 - Release-readiness recommendation
+- Handoff schema:
+  - `phase` (`review`)
+  - `inputs`
+  - `decision`
+  - `evidence`
+  - `open_risks`
 
 ## References
 
