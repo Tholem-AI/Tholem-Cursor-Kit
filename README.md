@@ -1,26 +1,45 @@
-# Tholem-Cursor-Kit
+# Tholem Cursor Kit
 
-Tholem-Cursor-Kit is a 2026 Cursor runtime framework authored under
-`staging/.cursor/` and intended to be copied into active project paths.
+Tholem Cursor Kit is a safety-first runtime framework for Cursor-based project execution.
 
-## Runtime surfaces
+The maintained runtime lives under `staging/.cursor/` and is intended to be copied into active project paths.
 
-The maintained framework lives in:
+## What This Provides
 
-- `staging/.cursor/rules`
-- `staging/.cursor/agents`
-- `staging/.cursor/skills`
-- `staging/.cursor/hooks.json`
+The staged framework includes:
 
-## Usage model
+- `staging/.cursor/rules` for governance, execution flow, safety, quality, and constraints
+- `staging/.cursor/agents` for role-specific agent contracts
+- `staging/.cursor/skills` for guided workflows (bootstrap, orchestration, roadmap, docs)
+- `staging/.cursor/hooks.json` as an opt-in hooks template
 
-- Use [INSTALL.md](INSTALL.md) for full setup and quickstart guidance.
-- Use [CONTRIBUTING.md](CONTRIBUTING.md) for framework maintenance standards.
+## Core Philosophy
 
-## Testing-phase disclaimer
+- **Safety first**: changes should be review-gated and evidence-backed
+- **Low-friction adoption**: copy runtime surfaces and start immediately
+- **Operational clarity**: role boundaries and artifacts stay explicit
+- **Documentation continuity**: behavior changes should stay aligned with docs
 
-This framework is in a testing phase. It intentionally changes default agent
-behavior through custom rules, agents, skills, and optional hooks. Outputs may
-be unpredictable or unsuitable without manual review. You are responsible for
-reviewing and validating all generated changes before applying them in your
-project. See [LICENSE](LICENSE) for legal terms and limitations.
+## Quickstart
+
+1. Follow [INSTALL.md](INSTALL.md) to copy runtime surfaces into your active `.cursor/` path.
+2. Optionally run bootstrap for requirements-driven initialization.
+3. Use role-focused subagents and RIPER checkpoints for non-trivial work.
+
+## Documentation Map
+
+- [Installation Guide](INSTALL.md)
+- [Contributing](CONTRIBUTING.md)
+- [Docs Index](docs/README.md)
+- [Using Subagents](docs/using-subagents.md)
+- [Using Hooks Effectively](docs/using-hooks.md)
+- [RIPER + Subagents Workflow](docs/riper-with-subagents.md)
+- [Bootstrap Flow Deep Dive](docs/bootstrap-flow.md)
+
+## Official Cursor Docs
+
+For the latest platform behavior and feature semantics, see [Cursor Docs](https://cursor.com/docs).
+
+## Testing-Phase Disclaimer
+
+This framework intentionally changes default Cursor behavior through custom rules, agents, skills, and optional hooks. Outputs can be unsuitable without review. You are responsible for validating generated changes before applying them in your project. See [LICENSE](LICENSE) for legal terms and limitations.

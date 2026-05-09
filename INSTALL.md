@@ -58,6 +58,18 @@ Bootstrap should infer stack/version constraints in this order:
 - Normal installation does not require migration-governance scripts.
 - Review generated changes before applying them, especially during bootstrap.
 
+## Next Documentation
+
+- [Docs Index](docs/README.md)
+- [Using Subagents](docs/using-subagents.md)
+- [Using Hooks Effectively](docs/using-hooks.md)
+- [RIPER + Subagents Workflow](docs/riper-with-subagents.md)
+- [Bootstrap Flow Deep Dive](docs/bootstrap-flow.md)
+
+## Official Cursor Docs
+
+For current Cursor platform behavior and reference material, see [Cursor Docs](https://cursor.com/docs).
+
 ## Testing-phase disclaimer
 
 This framework is in testing and may produce behavior that differs from default
