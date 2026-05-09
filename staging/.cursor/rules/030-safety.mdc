@@ -1,0 +1,39 @@
+---
+description: Unified runtime safety constraints for environment, git, and structure.
+alwaysApply: true
+---
+# 030-safety
+
+## Purpose
+
+Provide non-destructive safety constraints for environment, git behavior, and
+file structure changes.
+
+## Mandatory policy
+
+1. Do not modify production environment values or trigger deploy/environment
+   switching without explicit user approval.
+2. Detect environment context from explicit signals (for example user-declared
+   environment, CI/deployment labels, branch conventions, or environment
+   configuration values). When uncertain, assume `DEV` and surface warning
+   context.
+3. Apply stricter risk posture in STAGING/PROD than DEV/TEST.
+4. Do not perform destructive or history-rewriting git operations unless
+   explicitly requested by the user.
+5. Do not commit, merge, rebase, reset, or push without explicit user approval.
+6. Do not move or rename files/directories without explicit user approval.
+7. Preserve import/reference integrity when proposing structural changes.
+
+## Safe default git operations
+
+- `git status`
+- `git diff`
+- `git log`
+- `git show`
+- read-only branch listing
+
+## Integration points
+
+- Governance authority: `.cursor/rules/010-governance.mdc`
+- Execution lifecycle: `.cursor/rules/020-execution.mdc`
+- Validation gates: `.cursor/rules/040-quality.mdc`

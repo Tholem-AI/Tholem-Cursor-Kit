@@ -1,0 +1,34 @@
+---
+description: RIPER and ROADMAP execution lifecycle policy.
+alwaysApply: true
+---
+# 020-execution
+
+## Purpose
+
+Define the execution lifecycle for non-trivial work using RIPER and
+`ROADMAP.md` continuity checkpoints.
+
+## Mandatory policy
+
+1. Follow RIPER sequencing for non-trivial work:
+   Research -> Plan (with innovate checkpoint as needed) -> Execute -> Review.
+2. Treat innovate as a planning checkpoint, not a standalone mandatory phase.
+3. Use `ROADMAP.md` as the canonical active lifecycle surface.
+4. Agents may move work to `Ready for Review` but must not mark final completion
+   unless both conditions are met:
+   - explicit user confirmation, and
+   - validation evidence required by `.cursor/rules/040-quality.mdc`.
+5. Significant phase transitions require concise handoff summaries with:
+   what changed, why, impact on next actions, and responsible owner.
+6. Task and handoff updates must include concise evidence tied to actual repo
+   changes.
+7. When execution changes project structure materially, keep
+   `docs/File-Structure-Reference.md` aligned.
+
+## Integration points
+
+- Governance authority: `.cursor/rules/010-governance.mdc`
+- Safety constraints: `.cursor/rules/030-safety.mdc`
+- Quality gates: `.cursor/rules/040-quality.mdc`
+- Project constraints: `.cursor/rules/050-project-constraints.mdc`

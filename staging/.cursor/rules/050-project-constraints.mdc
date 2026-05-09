@@ -1,0 +1,32 @@
+---
+description: Requirements-driven project and stack constraint policy.
+alwaysApply: true
+---
+# 050-project-constraints
+
+## Purpose
+
+Define project-level technical constraints while keeping stack decisions
+requirements-driven and review-gated.
+
+## Mandatory policy
+
+1. Do not change core stack, framework, or architecture without explicit user
+   approval.
+2. Treat stack/version constraints as inferred project context, not fixed
+   template defaults.
+3. Use this stack inference order:
+   - requirements/design artifacts,
+   - detected project config files,
+   - conservative fallback assumptions (explicitly labeled).
+4. Present inferred stack constraints in a reviewable plan/diff before applying.
+5. Treat `docs/Project-Constraints.md` as the canonical project-constraints
+   documentation surface and keep it aligned with runtime decisions.
+6. Do not treat fallback versions as mandatory policy targets.
+
+## Integration points
+
+- Governance authority: `.cursor/rules/010-governance.mdc`
+- Execution lifecycle: `.cursor/rules/020-execution.mdc`
+- Safety constraints: `.cursor/rules/030-safety.mdc`
+- Validation gates: `.cursor/rules/040-quality.mdc`

@@ -1,6 +1,16 @@
 # Installation Guide (2026)
 
-This guide provides the canonical install flow for the Tholem Cursor Kit.
+This is the canonical setup and quickstart guide for the Tholem Cursor Kit.
+
+## Quickstart (Fast Path)
+
+1. Copy runtime surfaces into active project paths:
+   - `.cursor/rules`
+   - `.cursor/agents`
+   - `.cursor/skills`
+   - `.agents/skills` (only if your setup uses that surface)
+2. Start using the kit immediately.
+3. Optionally run bootstrap if you want requirements-driven setup.
 
 ## Tier A: Default Install (Low Friction)
 
@@ -13,10 +23,12 @@ Tier A is the default path and does not require bootstrap.
 
 Use Tier B when you want stack-aware placeholder population and initial planning docs.
 
-1. Add requirements/design artifacts if available (for example `requirements.md`, `design-doc.md`).
+1. Add project context artifacts if available (for example `requirements.md`,
+   PRD files, ADRs, architecture notes, API specs, implementation constraints,
+   or design docs).
 2. Run the canonical bootstrap prompt:
 
-> Bootstrap this project using the included bootstrap-project skill. Analyze design and requirements docs if present, initialize ROADMAP.md, populate required placeholders, and present a reviewable plan/diff before final acceptance.
+> Bootstrap this project using the included bootstrap-project skill. Auto-discover relevant requirements and context docs in the repository, initialize or update ROADMAP.md, generate docs/File-Structure-Reference.md and docs/Project-Constraints.md, populate required placeholders, and present a reviewable plan/diff before final acceptance. If critical context is ambiguous or missing, ask me to @-attach the most relevant files (for example PRD, ADR, architecture notes, API specs, or constraints docs) before applying changes.
 
 3. Review the proposed changes before applying anything.
 
@@ -41,16 +53,14 @@ Bootstrap should infer stack/version constraints in this order:
 - No requirement to manually remove bootstrap artifacts from runtime files.
 - No dependency on undocumented memory automation behavior; documentation continuity remains mandatory.
 
-## Validation
+## Notes on validation
 
-From kit root:
+- Normal installation does not require migration-governance scripts.
+- Review generated changes before applying them, especially during bootstrap.
 
-```bash
-python scripts/validate_setup.py --mode kit
-```
+## Testing-phase disclaimer
 
-From consumer project root:
-
-```bash
-python scripts/validate_setup.py --mode install
-```
+This framework is in testing and may produce behavior that differs from default
+Cursor agent behavior. Results can be unpredictable and should be reviewed
+manually before use. See [README.md](README.md) for framework context and
+[LICENSE](LICENSE) for legal terms and limitations.

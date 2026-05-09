@@ -1,0 +1,28 @@
+---
+description: Repeatable, command-backed quality and release-readiness gate policy.
+alwaysApply: true
+---
+# 040-quality
+
+## Purpose
+
+Enforce repeatable, command-backed validation and consistency checks before review/readiness
+declarations.
+
+## Mandatory policy
+
+1. Run relevant quality checks before declaring work ready for review.
+2. Require stricter validation for high-impact changes:
+   dependencies, APIs, environment behavior, or major multi-file edits.
+3. Do not mark work complete without corresponding validation evidence, as
+   required by `.cursor/rules/020-execution.mdc`.
+4. Keep implementation, `ROADMAP.md`, and key docs in sync, including
+   `docs/File-Structure-Reference.md` and `docs/Project-Constraints.md`.
+5. Do not apply broad quality-driven rewrites without explicit user approval.
+
+## Integration points
+
+- Governance authority: `.cursor/rules/010-governance.mdc`
+- Execution lifecycle: `.cursor/rules/020-execution.mdc`
+- Safety constraints: `.cursor/rules/030-safety.mdc`
+- Project constraints: `.cursor/rules/050-project-constraints.mdc`

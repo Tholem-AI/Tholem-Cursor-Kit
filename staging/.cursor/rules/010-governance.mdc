@@ -1,0 +1,30 @@
+---
+description: Canonical governance for approvals, escalation, and runtime boundaries.
+alwaysApply: true
+---
+# 010-governance
+
+## Purpose
+
+Define always-on governance shared by all runtime rules.
+
+## Mandatory policy
+
+1. Require explicit user approval before high-impact actions, including:
+   architecture changes, structural moves/renames, stack changes, or git writes.
+2. Escalate contradictions across runtime rules, roadmap, manifest, and migration
+   runbook before continuing.
+3. Keep runtime artifacts operational-only. Move tutorials, long examples, and
+   narrative rationale to docs.
+4. Keep `ROADMAP.md` and relevant docs aligned with actual implementation state.
+5. Do not reactivate deprecated workflow artifacts (for example legacy task or
+   memory archive files) as active execution targets unless explicitly approved
+   by the user.
+
+## Rule boundaries
+
+- Governance defines cross-cutting authority.
+- Execution lifecycle policy lives in `.cursor/rules/020-execution.mdc`.
+- Safety constraints live in `.cursor/rules/030-safety.mdc`.
+- Validation gates live in `.cursor/rules/040-quality.mdc`.
+- Stack constraints live in `.cursor/rules/050-project-constraints.mdc`.
